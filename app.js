@@ -40,7 +40,7 @@ let convertDistrictCase = each => {
   return {
     districtId: each.district_id,
     districtName: each.district_name,
-    stateid: each.state_id,
+    stateId: each.state_id,
     cases: each.cases,
     cured: each.cured,
     active: each.active,
@@ -50,7 +50,7 @@ let convertDistrictCase = each => {
 
 let statsCase = each => {
   return {
-    totalCase: each['sum(cases)'],
+    totalCases: each['sum(cases)'],
     totalCured: each['sum(cured)'],
     totalActive: each['sum(active)'],
     totalDeaths: each['sum(deaths)'],
@@ -77,11 +77,11 @@ app.post('/districts/', async (request, response) => {
   let {districtName, stateId, cases, cured, active, deaths} = requestBody
   let createDistrict = `insert into district (district_name,state_id,cases,cured,active,deaths)
   values('${districtName}',${stateId},${cases},${cured},${active},${deaths});`
-  let insertOperation = await db.run(createDistrict)
+  await db.run(createDistrict)
   response.send('District Successfully Added')
 })
 
-app.get('/districts/:districtId', async (request, response) => {
+app.get('/districts/:districtId/', async (request, response) => {
   let {districtId} = request.params
   let paticularDistrict = `select * from district where district_id =${districtId}`
 
@@ -92,7 +92,7 @@ app.get('/districts/:districtId', async (request, response) => {
 app.delete('/districts/:districtId/', async (request, response) => {
   let {districtId} = request.params
   let deleteQuery = `delete from district where district_id=${districtId}`
-  let deleteOperation = await db.run(deleteQuery)
+  await db.run(deleteQuery)
   response.send('District Removed')
 })
 
@@ -104,7 +104,7 @@ app.put('/districts/:districtId', async (request, response) => {
   let updateQuery = `update district 
   set district_name= '${districtName}',state_id=${stateId},cases=${cases},cured=${cured},active=${active},deaths=${deaths} 
   where district_id =${districtId};`
-  let updateoperation = await db.run(updateQuery)
+  await db.run(updateQuery)
   response.send('District Details Updated')
 })
 
